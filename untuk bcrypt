@@ -1,0 +1,26 @@
+router.post("/register", (req, res)=>{
+    const username = req.body.username
+    const password = req.body.password
+    const passwords = bcrypt.hashSync(password, 10)
+    const sqlQueryCheck = "SELECT COUNT(id) as total_record FROM data WHERE username = ?"
+    db.query(sqlQueryCheck, [username], (err, result)=>{
+        if(!err){
+            if(result[0] && result[0].total_record !=0){
+                res.json({
+                    error:true,
+                    message:"User Sudah Ada"
+                })
+            }else{
+                const sqlQuery = "INSERT INTO data(username, password) VALUE (?, ?)"
+                db.query(sqlQuery, [username, passwords], (err, result)=>{
+                    if(err){
+                        console.log(err)
+                    }else{
+                        res.send(result)
+                        console.log(result)
+                    }
+                })
+            }
+        }
+    })
+})
