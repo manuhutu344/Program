@@ -1,6 +1,8 @@
 router.post("/register", (req, res)=>{
-    const username = req.body.username
-    const password = req.body.password
+    const {username, password} = req.body
+    if(!username || !password){
+        res.send("tolong masukan username dan password")
+    }else{
     const passwords = bcrypt.hashSync(password, 10)
     const sqlQueryCheck = "SELECT COUNT(id) as total_record FROM data WHERE username = ?"
     db.query(sqlQueryCheck, [username], (err, result)=>{
@@ -23,4 +25,4 @@ router.post("/register", (req, res)=>{
             }
         }
     })
-})
+}
